@@ -1,5 +1,5 @@
 import Feed from "@/components/Feed";
-import Share from "@/components/Share";
+import PostShare from "@/components/PostShare";
 import Link from "next/link";
 
 const Homepage = () => {
@@ -16,7 +16,7 @@ const Homepage = () => {
           Following
         </Link>
       </div>
-      <Share />
+      <PostShare />
       <Feed />
     </div>
   );

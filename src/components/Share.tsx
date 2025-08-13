@@ -5,7 +5,6 @@ import ImageIO from "./ImageIO";
 import NextImage from "next/image";
 import { addPost } from "@/actions";
 import ImageEditor from "./ImageEditor";
-import { useUser } from "@clerk/nextjs";
 
 const Share = () => {
   const [media, setMedia] = useState<File | null>(null);
@@ -26,8 +25,6 @@ const Share = () => {
 
   const previewURL = media ? URL.createObjectURL(media) : null;
 
-  const { user } = useUser();
-
   const [state, formAction, isPending] = useActionState(addPost, {
     success: false,
     error: false,
@@ -45,14 +42,10 @@ const Share = () => {
 
   return (
     <form
+    className="flex-1"
       ref={formRef}
-      className="p-4 flex gap-4"
       action={formAction}
     >
-      {/* AVATAR */}
-      <div className="relative w-10 h-10 rounded-full overflow-hidden">
-        <ImageIO path={user?.imageUrl || "icons/profile.svg"} alt="" w={100} h={100} tr={true} />
-      </div>
       {/* OTHERS */}
       <div className="flex-1 flex flex-col gap-4">
         <input

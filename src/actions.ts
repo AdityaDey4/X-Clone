@@ -9,7 +9,7 @@ import { UploadResponse } from "imagekit/dist/libs/interfaces";
 
 
 
-export const followUser = async (targetUserId: string) => {
+export const followUser = async (targetUserId: string, username : string) => {
   const { userId } = await auth();
 
   if (!userId) return;
@@ -30,6 +30,7 @@ export const followUser = async (targetUserId: string) => {
       data: { followerId: userId, followingId: targetUserId },
     });
   }
+  revalidatePath(`/${username}`);
 };
 
 export const likePost = async (postId: number) => {

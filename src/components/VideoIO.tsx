@@ -16,7 +16,7 @@ const VideoIO = ({ path, className }: VideoTypes) => {
       className={className}
       transformation={[
         { width: 1920, height: 1080, quality: 90 },
-        { raw: "l-text,i-LamaDev,fs-100,co-white,l-end" },
+        { raw: "l-text,i-X(Aditya),fs-100,co-white,l-end" },
       ]}
       controls
     />

@@ -7,6 +7,7 @@ import { Post as PostType } from "@prisma/client";
 import { imagekit } from '@/utils'
 import { format } from "timeago.js";
 import { prisma } from '@/prisma'
+import VideoIO from './VideoIO'
 
 
 
@@ -94,6 +95,14 @@ export const Post = ({ type , post}: { type?: "status" | "comment", post : PostW
                 alt=""
                 w={600}
                 h={originalPost.imgHeight || 600}
+                className={originalPost.isSensitive ? "blur-3xl" : ""}
+              />
+            </div>
+          )}
+          {originalPost.video && (
+            <div className="rounded-lg overflow-hidden">
+              <VideoIO
+                path={originalPost.video}
                 className={originalPost.isSensitive ? "blur-3xl" : ""}
               />
             </div>

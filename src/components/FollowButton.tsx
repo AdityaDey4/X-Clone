@@ -1,6 +1,7 @@
 "use client";
 
 import { followUser } from "@/actions";
+import { socket } from "@/socket";
 import { useUser } from "@clerk/nextjs";
 import { useOptimistic, useState } from "react";
 
@@ -25,8 +26,21 @@ export const FollowButton = ({
   if (!user) return;
 
   const followAction = async () => {
+
+    // has not been tested yet.
+    if (!optimisticFollow) {
+      socket.emit("sendNotification", {
+        receiverUsername: username,
+        data: {
+          senderUsername: user.username,
+          type: "follow",
+          link: `/${user.username}`,
+        },
+      });
+    }
+
     switchOptimisticFollow("");
-    await followUser(userId);
+    await followUser(userId, username);
     setState((prev) => !prev);
   };
 

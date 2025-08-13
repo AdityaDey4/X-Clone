@@ -25,8 +25,8 @@ const UserPage = async ({
     },
   });
 
-
   if (!user) return notFound();
+  const loggedInUserProfile = userId === user.id;
 
   return (
     <div className="">
@@ -60,7 +60,7 @@ const UserPage = async ({
           <div className="w-9 h-9 flex items-center justify-center rounded-full border-[1px] border-gray-500 cursor-pointer">
             <ImageIO path="icons/message.svg" alt="more" w={20} h={20} />
           </div>
-          {userId && (
+          {userId && !loggedInUserProfile && (
             <FollowButton
             userId={user.id}
             isFollowed={!!user.followings.length}
@@ -99,11 +99,11 @@ const UserPage = async ({
           {/* FOLLOWINGS & FOLLOWERS */}
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
-              <span className="font-bold">{user._count.followers}</span>
+              <span className="font-bold">{user._count.followings}</span>
               <span className="text-textGray text-[15px]">Followers</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-bold">{user._count.followings}</span>
+              <span className="font-bold">{user._count.followers}</span>
               <span className="text-textGray text-[15px]">Followings</span>
             </div>
           </div>

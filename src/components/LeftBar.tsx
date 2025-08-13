@@ -4,6 +4,7 @@ import React from 'react'
 import Socket from './Socket';
 import { currentUser } from "@clerk/nextjs/server";
 import Notification from './Notification';
+import { prisma } from '@/prisma';
 
 const menuList = [
   {
@@ -64,7 +65,16 @@ const menuList = [
 
 const LeftBar = async () => {
 
-  const user = await currentUser();
+  const currUser = await currentUser();
+  if (!currUser?.username) {
+    return null; // or return a placeholder UI
+  }
+  const username = currUser?.username;
+
+  const user = await prisma.user.findUnique({
+      where: { username: username }
+  });
+
 
   return (
      <div className="h-screen sticky top-0 flex flex-col justify-between pt-2 pb-8">
@@ -115,13 +125,13 @@ const LeftBar = async () => {
       </div>
       <Socket />
       {/* USER */}
-      <div className="flex items-center justify-between">
+      <div className="flex top-0 justify-between">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 relative rounded-full overflow-hidden">
-            <ImageIO path={user?.imageUrl || "icons/profile.svg"} alt="lama dev" w={100} h={100} tr={true} />
+            <ImageIO path={user?.img || "icons/profile.svg"} alt="lama dev" w={100} h={100} tr={true} />
           </div>
           <div className="hidden xxl:flex flex-col">
-            <span className="font-bold">{user?.fullName}</span>
+            <span className="font-bold">{user?.displayName}</span>
             <span className="text-sm text-textGray">{user?.username}</span>
           </div>
         </div>
