@@ -1,90 +1,17 @@
-"use client";
 
-import ImageIO from "@/components/ImageIO";
-import { useRouter } from "next/navigation";
+
+import CloseRouter from "@/components/CloseRouter";
+import PostShare from "@/components/PostShare";
 
 const PostModal = () => {
-  const router = useRouter();
-
-  const closeModal = () => {
-    router.back();
-  };
 
   return (
-    <div className="absolute w-screen h-screen top-0 left-0 z-20 bg-[#293139a6] flex justify-center">
+    <div className="fixed inset-0 z-20 bg-[#293139a6] flex justify-center items-start overflow-y-auto">
       <div className="py-4 px-8 rounded-xl bg-black w-[600px] h-max mt-12">
         {/* TOP */}
-        <div className="flex items-center justify-between">
-          <div className="cursor-pointer" onClick={closeModal}>
-            X
-          </div>
-          <div className="text-iconBlue font-bold">Drafts</div>
-        </div>
-        {/* CENTER */}
-        <div className="py-8 flex gap-4">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden">
-            <ImageIO
-              path="general/avatar.png"
-              alt="Lama Dev"
-              w={100}
-              h={100}
-              tr={true}
-            />
-          </div>
-          <input
-            className="flex-1 bg-transparent outline-none text-lg"
-            type="text"
-            placeholder="What is happening?!"
-          />
-        </div>
+        <CloseRouter />
         {/* BOTTOM */}
-        <div className=" flex items-center justify-between gap-4 flex-wrap border-t border-borderGray pt-4">
-          <div className="flex gap-4 flex-wrap">
-            <ImageIO
-              path="icons/image.svg"
-              alt=""
-              w={20}
-              h={20}
-              className="cursor-pointer"
-            />
-            <ImageIO
-              path="icons/gif.svg"
-              alt=""
-              w={20}
-              h={20}
-              className="cursor-pointer"
-            />
-            <ImageIO
-              path="icons/poll.svg"
-              alt=""
-              w={20}
-              h={20}
-              className="cursor-pointer"
-            />
-            <ImageIO
-              path="icons/emoji.svg"
-              alt=""
-              w={20}
-              h={20}
-              className="cursor-pointer"
-            />
-            <ImageIO
-              path="icons/schedule.svg"
-              alt=""
-              w={20}
-              h={20}
-              className="cursor-pointer"
-            />
-            <ImageIO
-              path="icons/location.svg"
-              alt=""
-              w={20}
-              h={20}
-              className="cursor-pointer"
-            />
-          </div>
-          <button className="py-2 px-5 text-black bg-white rounded-full font-bold">Post</button>
-        </div>
+        <PostShare key="modal" modal={true}/>
       </div>
     </div>
   );

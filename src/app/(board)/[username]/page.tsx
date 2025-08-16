@@ -43,7 +43,7 @@ const UserPage = async ({
         <div className="relative w-full">
           {/* COVER */}
           <div className="w-full relative">
-            <ImageIO path={user.cover || "general/cover.jpg"} alt="" w={600} h={200} tr={true} />
+            <ImageIO path={user.cover || "general/coverpic.jpg"} alt="" w={600} h={200} tr={true} />
           </div>
           {/* AVATAR */}
           <div className="w-1/5 aspect-square rounded-full overflow-hidden border-4 border-black bg-gray-300 absolute left-4 -translate-y-1/2">
@@ -78,7 +78,7 @@ const UserPage = async ({
           <p>{user?.bio}</p>
           {/* JOB & LOCATION & DATE */}
           <div className="flex gap-4 text-textGray text-[15px]">
-            <div className="flex items-center gap-2">
+            {user.location && <div className="flex items-center gap-2">
               <ImageIO
                 path="icons/userLocation.svg"
                 alt="location"
@@ -86,7 +86,7 @@ const UserPage = async ({
                 h={20}
               />
               <span>{user?.location}</span>
-            </div>
+            </div>}
             <div className="flex items-center gap-2">
               <ImageIO path="icons/date.svg" alt="date" w={20} h={20} />
               <span>Joined{" "}

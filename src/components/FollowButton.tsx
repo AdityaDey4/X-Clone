@@ -3,7 +3,8 @@
 import { followUser } from "@/actions";
 import { socket } from "@/socket";
 import { useUser } from "@clerk/nextjs";
-import { useOptimistic, useState } from "react";
+import { useState } from "react";
+import { useFollowContext } from "@/app/context/FollowContext";
 
 export const FollowButton = ({
   userId,
@@ -14,21 +15,17 @@ export const FollowButton = ({
   isFollowed: boolean;
   username: string;
 }) => {
+  const { incrementFollowChange, decrementFollowChange } = useFollowContext();
   const [state, setState] = useState(isFollowed);
 
   const { user } = useUser();
-
-  const [optimisticFollow, switchOptimisticFollow] = useOptimistic(
-    state,
-    (prev) => !prev
-  );
 
   if (!user) return;
 
   const followAction = async () => {
 
     // has not been tested yet.
-    if (!optimisticFollow) {
+    if (!state) {
       socket.emit("sendNotification", {
         receiverUsername: username,
         data: {
@@ -37,9 +34,9 @@ export const FollowButton = ({
           link: `/${user.username}`,
         },
       });
-    }
+      incrementFollowChange();
+    }else decrementFollowChange();
 
-    switchOptimisticFollow("");
     await followUser(userId, username);
     setState((prev) => !prev);
   };
@@ -47,7 +44,7 @@ export const FollowButton = ({
   return (
     <form action={followAction}>
       <button className="py-2 px-4 bg-white text-black font-bold rounded-full">
-        {optimisticFollow ? "Unfollow" : "Follow"}
+        {state ? "Unfollow" : "Follow"}
       </button>
     </form>
   )

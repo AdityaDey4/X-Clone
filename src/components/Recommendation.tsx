@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import React from 'react'
-import ImageIO from './ImageIO'
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/prisma';
+import { RecommendationProfile } from './RecommendationProfile';
 
 const Recommendation = async () => {
 
@@ -26,25 +26,28 @@ const Recommendation = async () => {
     select: { id: true, displayName: true, username: true, img: true },
   });
 
+  const remain = 3-friendRecommendations.length;
+  const friendRecommendationsIds = friendRecommendations.map((f)=> f.id);
+  const allFollowedIds = [...friendRecommendationsIds, ...followedUserIds];
+
+  const remainFriendRecommendations = await prisma.user.findMany({
+    where: {
+      id: { not: userId, notIn: allFollowedIds  }
+    },
+    take: remain,
+    select: { id: true, displayName: true, username: true, img: true },
+  });
+
+  const allFriendRecommendations = [...friendRecommendations, ...remainFriendRecommendations];
 
   return (
     <div className="p-4 rounded-2xl border-[1px] border-borderGray flex flex-col gap-4">
       {/* USER CARD */}
-      {friendRecommendations.map((person) => (
-      <div className='flex items-center justify-between' key={person.id}>
-        {/* IMAGE AND USER INFO */}
-        <div className='flex items-center gap-2'>
-          <div className='relative rounded-full overflow-hidden w-10 h-10'>
-            <ImageIO path={person.img || "icons/profile.svg"} alt={person.username} w={100} h={100} tr={true}/>
-          </div>
-          <div className=''>
-            <h1 className="text-md font-bold">{person.displayName || person.username}</h1>
-            <span className="text-textGray text-sm">{person.username}</span>
-          </div>
+      {allFriendRecommendations.map((person) => (
+        <div key={person.id}> 
+
+          <RecommendationProfile person={person} />
         </div>
-        {/* BUTTON */}
-        <button className="py-1 px-4 font-semibold bg-white text-black rounded-full">Follow</button>
-      </div>
       ))}
       <Link href="/" className="text-iconBlue">
         Show More

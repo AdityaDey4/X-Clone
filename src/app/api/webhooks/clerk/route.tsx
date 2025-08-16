@@ -25,12 +25,15 @@ export async function POST(req: NextRequest) {
         if(existingUser) {
             return new Response("User already exists, treated as sign-in", { status: 200 });
         }
+
+        const displayName = (evt.data.first_name || evt.data.last_name) ? evt.data.first_name+" "+evt.data.last_name : null;
         await prisma.user.create({
           data: {
             id: evt.data.id,
             username: evt.data.username || "null",
             email: evt.data.email_addresses[0].email_address,
             img: evt.data.image_url || null,
+            displayName
           },
         });
         return new Response("User created", { status: 200 });

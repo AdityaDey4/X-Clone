@@ -6,7 +6,7 @@ import NextImage from "next/image";
 import { addPost } from "@/actions";
 import ImageEditor from "./ImageEditor";
 
-const Share = () => {
+const Share = ({modal} : {modal : boolean}) => {
   const [media, setMedia] = useState<File | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [settings, setSettings] = useState<{
@@ -125,10 +125,10 @@ const Share = () => {
               name="file"
               onChange={handleMediaChange}
               className="hidden"
-              id="file"
+              id={modal ? "file-input-modal" : "file-input-normal"}
               accept="image/*,video/*"
             />
-            <label htmlFor="file">
+            <label htmlFor={modal ? "file-input-modal" : "file-input-normal"}>
               <ImageIO
                 path="icons/image.svg"
                 alt=""

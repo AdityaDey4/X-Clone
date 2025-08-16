@@ -38,7 +38,7 @@ const Notification = () => {
   };
 
   return (
-    <div className="relative mb-4">
+    <div className="relative">
       <div
         className="p-2 rounded-full hover:bg-[#181818] flex items-center gap-4 cursor-pointer"
         onClick={() => setOpen((prev) => !prev)}

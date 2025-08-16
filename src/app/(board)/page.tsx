@@ -16,7 +16,7 @@ const Homepage = () => {
           Following
         </Link>
       </div>
-      <PostShare />
+      <PostShare key="homepage" modal={false}/>
       <Feed />
     </div>
   );

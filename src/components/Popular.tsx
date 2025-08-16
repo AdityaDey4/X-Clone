@@ -12,7 +12,7 @@ const Popular = () => {
       <div className="flex gap-4">
         <div className="relative w-20 h-20 rounded-xl overflow-hidden">
           <ImageIO
-            path="general/cover.jpg"
+            path="general/coverpic.jpg"
             alt="event"
             w={120}
             h={120}
@@ -21,7 +21,7 @@ const Popular = () => {
         </div>
         <div className="flex-1">
           <h2 className="font-bold text-textGrayLight">
-            Nadal v Federer Grand Slam
+            New cover pic uploaded by Aditya
           </h2>
           <span className="text-sm text-textGray">Last Night</span>
         </div>

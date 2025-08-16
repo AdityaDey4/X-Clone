@@ -7,8 +7,6 @@ import { revalidatePath } from "next/cache";
 import {z} from "zod";
 import { UploadResponse } from "imagekit/dist/libs/interfaces";
 
-
-
 export const followUser = async (targetUserId: string, username : string) => {
   const { userId } = await auth();
 
@@ -31,6 +29,7 @@ export const followUser = async (targetUserId: string, username : string) => {
     });
   }
   revalidatePath(`/${username}`);
+  revalidatePath('/');
 };
 
 export const likePost = async (postId: number) => {
@@ -186,7 +185,7 @@ export const addPost = async (
   };
 
   const Post = z.object({
-    desc: z.string().max(140),
+    desc: z.string().max(140).min(1),
     isSensitive: z.boolean().optional(),
   });
 

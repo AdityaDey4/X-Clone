@@ -2,6 +2,7 @@ import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import QueryProvider from "@/providers/QueryProvider";
+import { FollowProvider } from "./context/FollowContext";
 
 export default function AppLayout({
   children,
@@ -11,9 +12,11 @@ export default function AppLayout({
   return (
     <ClerkProvider>
       <QueryProvider>
-        <html lang="en">
-          <body>{children}</body>
-        </html>
+        <FollowProvider>
+          <html lang="en">
+            <body>{children}</body>
+          </html>
+        </FollowProvider>
       </QueryProvider>
     </ClerkProvider>
   );
