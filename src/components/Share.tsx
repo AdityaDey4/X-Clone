@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import React, { useActionState, useEffect, useRef, useState } from "react";
 import ImageIO from "./ImageIO";
 import NextImage from "next/image";
@@ -7,6 +9,12 @@ import { addPost } from "@/actions";
 import ImageEditor from "./ImageEditor";
 
 const Share = ({modal} : {modal : boolean}) => {
+
+  const router = useRouter();
+  const closeModal = () => {
+    router.back();
+  };
+
   const [media, setMedia] = useState<File | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [settings, setSettings] = useState<{
@@ -37,6 +45,7 @@ const Share = ({modal} : {modal : boolean}) => {
       formRef.current?.reset();
       setMedia(null);
       setSettings({ type: "original", sensitive: false });
+      if(modal) closeModal()
     }
   }, [state]);
 

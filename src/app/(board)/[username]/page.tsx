@@ -1,18 +1,17 @@
-import Feed from '@/components/Feed'
-import { FollowButton } from '@/components/FollowButton'
-import ImageIO from '@/components/ImageIO'
-import { prisma } from '@/prisma'
-import { auth } from '@clerk/nextjs/server'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import React from 'react'
+import Feed from "@/components/Feed";
+import { FollowButton } from "@/components/FollowButton";
+import ImageIO from "@/components/ImageIO";
+import { prisma } from "@/prisma";
+import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import React from "react";
 
 const UserPage = async ({
   params,
 }: {
   params: Promise<{ username: string }>;
 }) => {
-
   const { userId } = await auth();
 
   const username = (await params).username;
@@ -42,12 +41,24 @@ const UserPage = async ({
         {/* COVER & AVATAR CONTAINER */}
         <div className="relative w-full">
           {/* COVER */}
-          <div className="w-full relative">
-            <ImageIO path={user.cover || "general/coverpic.jpg"} alt="" w={600} h={200} tr={true} />
+          <div className="w-full relative -z-10">
+            <ImageIO
+              path={user.cover || "general/coverpic.jpg"}
+              alt=""
+              w={600}
+              h={200}
+              tr={true}
+            />
           </div>
           {/* AVATAR */}
-          <div className="w-1/5 aspect-square rounded-full overflow-hidden border-4 border-black bg-gray-300 absolute left-4 -translate-y-1/2">
-            <ImageIO path={user.img || "icons/profile.svg"} alt="" w={140} h={140} tr={true} />
+          <div className="w-1/5 aspect-square rounded-full overflow-hidden border-4 border-black bg-gray-300 absolute left-4 -translate-y-1/2 -z-10">
+            <ImageIO
+              path={user.img || "icons/profile.svg"}
+              alt=""
+              w={140}
+              h={140}
+              tr={true}
+            />
           </div>
         </div>
         <div className="flex w-full items-center justify-end gap-2 p-2">
@@ -60,13 +71,20 @@ const UserPage = async ({
           <div className="w-9 h-9 flex items-center justify-center rounded-full border-[1px] border-gray-500 cursor-pointer">
             <ImageIO path="icons/message.svg" alt="more" w={20} h={20} />
           </div>
+          {/* FOLLOW USER  */}
           {userId && !loggedInUserProfile && (
             <FollowButton
-            userId={user.id}
-            isFollowed={!!user.followings.length}
-            username={username}
+              userId={user.id}
+              isFollowed={!!user.followings.length}
+              username={username}
             />
           )}
+          {/* UPDATE PROFILE AS THIS IS USER'S PROFILE  */}
+          {userId && loggedInUserProfile && <Link href={`/${username}/update`}>
+            <button className="py-2 px-4 bg-white text-black font-bold rounded-full">
+              Update
+            </button>
+          </Link>}
         </div>
         {/* USER DETAILS */}
         <div className="p-4 flex flex-col gap-2">
@@ -78,22 +96,26 @@ const UserPage = async ({
           <p>{user?.bio}</p>
           {/* JOB & LOCATION & DATE */}
           <div className="flex gap-4 text-textGray text-[15px]">
-            {user.location && <div className="flex items-center gap-2">
-              <ImageIO
-                path="icons/userLocation.svg"
-                alt="location"
-                w={20}
-                h={20}
-              />
-              <span>{user?.location}</span>
-            </div>}
+            {user.location && (
+              <div className="flex items-center gap-2">
+                <ImageIO
+                  path="icons/userLocation.svg"
+                  alt="location"
+                  w={20}
+                  h={20}
+                />
+                <span>{user?.location}</span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <ImageIO path="icons/date.svg" alt="date" w={20} h={20} />
-              <span>Joined{" "}
+              <span>
+                Joined{" "}
                 {new Date(user.createdAt.toString()).toLocaleDateString(
                   "en-US",
                   { month: "long", year: "numeric" }
-                )}</span>
+                )}
+              </span>
             </div>
           </div>
           {/* FOLLOWINGS & FOLLOWERS */}
@@ -112,7 +134,7 @@ const UserPage = async ({
       {/* FEED */}
       <Feed userProfileId={user.id} />
     </div>
-  )
-}
+  );
+};
 
-export default UserPage
+export default UserPage;

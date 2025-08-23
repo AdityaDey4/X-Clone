@@ -4,10 +4,9 @@ import Link from 'next/link'
 import PostInteractions from './PostInteractions'
 import PostInfo from './PostInfo'
 import { Post as PostType } from "@prisma/client";
-import { imagekit } from '@/utils'
 import { format } from "timeago.js";
-import { prisma } from '@/prisma'
 import VideoIO from './VideoIO'
+import { auth } from '@clerk/nextjs/server'
 
 
 
@@ -32,6 +31,7 @@ type PostWithDetails = PostType &
 
 export const Post = ({ type , post}: { type?: "status" | "comment", post : PostWithDetails }) => {
 
+  // const { userId } = await auth();
   const originalPost = post.rePost || post;
   return (
     <div className="p-4 border-y-[1px] border-borderGray">
@@ -79,7 +79,7 @@ export const Post = ({ type , post}: { type?: "status" | "comment", post : PostW
                 )}
               </div>
             </Link>
-            <PostInfo />
+            <PostInfo postId={post.id} />
           </div>
           {/* TEXT & MEDIA */}
           <Link href={`/${post.user.username}/status/${post.id}`}>

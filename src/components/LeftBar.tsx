@@ -19,6 +19,8 @@ const LeftBar = async () => {
     where: { username: username },
   });
 
+  if(!user) return null;
+
   return (
     <div className="h-screen sticky top-0 flex flex-col justify-between pt-2 pb-8">
       {/* LOGO MENU BUTTON */}
@@ -47,7 +49,7 @@ const LeftBar = async () => {
             {/* EXPLORE- WILL CREATE A SEPARATE COMPONENT LIKE NOTIFICATION  */}
             <div>
               <Link
-                href={'/'}
+                href={'/compose/search'}
                 className="p-2 rounded-full hover:bg-[#181818] flex items-center gap-4"
               >
                 <ImageIO

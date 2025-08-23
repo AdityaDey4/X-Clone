@@ -4,10 +4,10 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "./prisma";
 import { imagekit } from "./utils";
 import { revalidatePath } from "next/cache";
-import {z} from "zod";
+import { z } from "zod";
 import { UploadResponse } from "imagekit/dist/libs/interfaces";
 
-export const followUser = async (targetUserId: string, username : string) => {
+export const followUser = async (targetUserId: string, username: string) => {
   const { userId } = await auth();
 
   if (!userId) return;
@@ -29,7 +29,7 @@ export const followUser = async (targetUserId: string, username : string) => {
     });
   }
   revalidatePath(`/${username}`);
-  revalidatePath('/');
+  revalidatePath("/");
 };
 
 export const likePost = async (postId: number) => {
@@ -100,6 +100,106 @@ export const savePost = async (postId: number) => {
     });
   }
 };
+
+export const updateProfile = async (
+  prevState: { success: boolean; error: boolean },
+  formData: FormData
+) => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { success: false, error: true };
+
+    const username = formData.get("username")?.toString();
+
+    // Extract file inputs
+    const coverFile = formData.get("cover") as File | null;
+    const imgFile = formData.get("img") as File | null;
+
+    let cover: string | undefined;
+    let img: string | undefined;
+
+    if (coverFile && coverFile.size > 0) {
+      const result: UploadResponse = await uploadProfileFile(coverFile, true);
+      cover = result.filePath;
+    }
+
+    if (imgFile && imgFile.size > 0) {
+      const result: UploadResponse = await uploadProfileFile(imgFile, false);
+      img = result.filePath;
+    }
+
+    // Build data object (conditionally add cover/img)
+    const data = {
+      displayName: formData.get("displayName")?.toString().trim() || undefined,
+      bio: formData.get("bio")?.toString().trim() || undefined,
+      location: formData.get("location")?.toString().trim() || undefined,
+      job: formData.get("job")?.toString().trim() || undefined,
+      website: formData.get("website")?.toString().trim() || undefined,
+      ...(cover && { cover }),
+      ...(img && { img }),
+    };
+
+    // ZOD schema
+    const profileSchema = z.object({
+      displayName: z.string().min(3).max(50).optional(),
+      bio: z.string().max(300).optional(),
+      location: z.string().max(100).optional(),
+      job: z.string().max(100).optional(),
+      website: z.string().url().optional().or(z.string().max(200).optional()),
+      img: z.string().optional(),
+      cover: z.string().optional(),
+    });
+
+    // Validate
+    const parsed = profileSchema.safeParse(data);
+    if (!parsed.success) {
+      console.error("Validation failed", parsed.error.flatten());
+      return { success: false, error: true };
+    }
+
+    // Update prisma
+    await prisma.user.update({
+      where: { id: userId },
+      data: parsed.data,
+    });
+
+    // Revalidate paths
+    revalidatePath("/");
+    if (username) revalidatePath(`/${username}`);
+
+    return { success: true, error: false };
+  } catch (err) {
+    console.error("Update profile error:", err);
+    return { success: false, error: true };
+  }
+};
+
+
+const uploadProfileFile = async (file: File, cover : boolean): Promise<UploadResponse> => {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const transformation = `${cover ? "w-600 h-300" : "w-200 h-200"}`;
+
+    return new Promise((resolve, reject) => {
+      imagekit.upload(
+        {
+          file: buffer,
+          fileName: file.name,
+          folder: "/general",
+          ...(file.type.includes("image") && {
+            transformation: {
+              pre: transformation,
+            },
+          }),
+        },
+        function (error, result) {
+          if (error) reject(error);
+          else resolve(result as UploadResponse);
+        }
+      );
+    });
+  };
 
 export const addComment = async (
   prevState: { success: boolean; error: boolean },
