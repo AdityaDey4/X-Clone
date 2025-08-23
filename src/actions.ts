@@ -101,6 +101,20 @@ export const savePost = async (postId: number) => {
   }
 };
 
+export const deletePost = async (postId: number)=>  {
+  const { userId } = await auth();
+  if (!userId) return;
+
+  const user = await prisma.user.findFirst({where : {id : userId}});
+  if(!user) return;
+
+  await prisma.post.delete({ where: { id: postId } });
+
+  // Revalidate feed / profile page
+  revalidatePath("/");
+  revalidatePath(`/profile/${user.username}`);
+}
+
 export const updateProfile = async (
   prevState: { success: boolean; error: boolean },
   formData: FormData

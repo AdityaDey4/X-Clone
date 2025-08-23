@@ -55,7 +55,7 @@ const Notification = () => {
       </div>
       {open && (
         <div className="absolute -right-full p-4 rounded-lg bg-white text-black flex flex-col gap-4 w-max">
-          <h1 className="text-xl text-textGray">Notifications</h1>
+          {!notifications.length && <h1 className="text-xl text-textGray">No Notifications</h1>}
           {notifications.map((n) => (
             <div
               className="cursor-pointer"
@@ -76,7 +76,7 @@ const Notification = () => {
             onClick={reset}
             className="bg-black text-white p-2 text-sm rounded-lg"
           >
-            Mark as read
+            {notifications.length ? "Mark as read" : "Close"}
           </button>
         </div>
       )}

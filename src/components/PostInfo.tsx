@@ -1,9 +1,22 @@
 "use client";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import ImageIO from "./ImageIO";
+import { deletePost } from "@/actions";
+import { useRouter } from "next/navigation";
 
-const PostInfo = ({postId} : {postId : number}) => {
+const PostInfo =  ({status, postId} : {status?: boolean, postId : number}) => {
+  const router = useRouter();
+  const closeModal = () => {
+    router.back();
+  };
   const [open, setOpen] = useState<boolean>(false);
+  const handleDelete = () => {
+    startTransition(async () => {
+      await deletePost(postId);
+      if(status) closeModal();
+    });
+  };
+  
   return (
     <div className="relative">
       <div
@@ -15,7 +28,7 @@ const PostInfo = ({postId} : {postId : number}) => {
 
       {open && (
         <div className=""> 
-          <span className="text-red-500 absolute -translate-x-8 cursor-pointer">Delete</span>
+          <span className="text-red-500 absolute -translate-x-8 cursor-pointer" onClick={handleDelete}>Delete</span>
         </div>
       )}
     </div>

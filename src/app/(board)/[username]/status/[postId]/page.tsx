@@ -3,6 +3,7 @@ import ImageIO from "@/components/ImageIO";
 import {Post} from "@/components/Post";
 import { prisma } from "@/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { User } from "@prisma/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -16,6 +17,9 @@ const StatusPage = async ({
   const postId = (await params).postId;
 
   if (!userId) return;
+
+  const loggedInUser : User | null = await prisma.user.findFirst({where : {id : userId}});
+  if(!loggedInUser) return;
 
    const postIncludeQuery = {
     user: { select: { displayName: true, username: true, img: true } },
@@ -63,6 +67,7 @@ const StatusPage = async ({
         comments={postWithComments.comments}
         postId={postWithComments.id}
         username={postWithComments.user.username}
+        userProfilePic={loggedInUser.img}
       />
     </div>
   );

@@ -20,10 +20,12 @@ const Comments = ({
   comments,
   postId,
   username,
+  userProfilePic
 }: {
   comments: CommentWithDetails[];
   postId: number;
   username: string;
+  userProfilePic : string | null;
 }) => {
 
   const { isLoaded, isSignedIn, user } = useUser();
@@ -49,7 +51,7 @@ const Comments = ({
     <div className=''>
       {user && (<form action={formAction} className='flex items-center justify-between gap-4 p-4 '>
         <div className='relative w-10 h-10 rounded-full overflow-hidden -z-10'>
-          <ImageIO path={user?.imageUrl} alt="Aditya Dey" w={100} h={100} tr={true}/>
+          <ImageIO path={userProfilePic || "icons/profile.svg"} alt="Aditya Dey" w={100} h={100} tr={true}/>
         </div>
         <input type="number" name="postId" hidden readOnly value={postId} />
           <input
