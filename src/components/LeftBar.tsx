@@ -66,7 +66,7 @@ const LeftBar = async () => {
             {/* BOOKMARKS- NEW PAGE  */}
             <div>
               <Link
-                href={'/'}
+                href={'/save'}
                 className="p-2 rounded-full hover:bg-[#181818] flex items-center gap-4"
               >
                 <ImageIO

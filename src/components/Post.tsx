@@ -5,7 +5,7 @@ import ImageIO from './ImageIO'
 import Link from 'next/link'
 import PostInteractions from './PostInteractions'
 import PostInfo from './PostInfo'
-import { Post as PostType } from "@prisma/client";
+import { Post as PostType, SavedPosts } from "@prisma/client";
 import { format } from "timeago.js";
 import VideoIO from './VideoIO'
 import { useAuth } from '@clerk/nextjs'
@@ -31,10 +31,19 @@ type PostWithDetails = PostType &
     rePost?: (PostType & Engagement & { user: UserSummary }) | null;
   };
 
-export const Post = ({ type , post}: { type?: "status" | "comment", post : PostWithDetails }) => {
+  type SavedPostWithDetails = SavedPosts & {
+  post: PostWithDetails;
+};
+
+export const Post = ({ type , post}: { type?: "status" | "comment", post : SavedPostWithDetails | PostWithDetails }) => {
 
   const {userId} = useAuth();
+  
+  if("post" in post) post =  post.post;
+
   const originalPost = post.rePost || post;
+
+  console.log(originalPost);
   return (
     <div className="p-4 border-y-[1px] border-borderGray">
       {/* POST TYPE */}
