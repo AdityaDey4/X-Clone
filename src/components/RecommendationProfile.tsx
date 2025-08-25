@@ -2,6 +2,8 @@ import React from "react";
 import ImageIO from "./ImageIO";
 import { FollowButton } from "./FollowButton";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/prisma";
 
 type PersonProfile = {
   id: string;
@@ -9,11 +11,23 @@ type PersonProfile = {
   username: string;
   displayName: string | null;
 };
-export const RecommendationProfile = ({
+export const RecommendationProfile = async ({
   person,
 }: {
   person: PersonProfile;
 }) => {
+
+  const {userId} = await auth();
+  if(!userId) return null;
+
+  const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        followers: userId ? { where: { followingId: person.id } } : undefined,
+      },
+    });
+
+    if(!user) return null;
   return (
     <div className="flex items-center justify-between" key={person.id}>
       {/* IMAGE AND USER INFO */}
@@ -35,11 +49,14 @@ export const RecommendationProfile = ({
           </div>
           </Link>
       {/* BUTTON */}
-      <FollowButton
+      {userId != person.id && (
+
+        <FollowButton
         userId={person.id}
-        isFollowed={false}
+        isFollowed={!!user.followers.length}
         username={person.username}
-      />
+        />
+      )}
     </div>
   );
 };

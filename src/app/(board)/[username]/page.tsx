@@ -120,14 +120,18 @@ const UserPage = async ({
           </div>
           {/* FOLLOWINGS & FOLLOWERS */}
           <div className="flex gap-4">
-            <div className="flex items-center gap-2">
+            <Link href={`/${username}/followers`}>
+            <div className="flex items-center gap-2 cursor-pointer">
               <span className="font-bold">{user._count.followings}</span>
               <span className="text-textGray text-[15px]">Followers</span>
             </div>
-            <div className="flex items-center gap-2">
+            </Link>
+            <Link href={`/${username}/followings`}>
+            <div className="flex items-center gap-2 cursor-pointer">
               <span className="font-bold">{user._count.followers}</span>
               <span className="text-textGray text-[15px]">Followings</span>
             </div>
+            </Link>
           </div>
         </div>
       </div>
